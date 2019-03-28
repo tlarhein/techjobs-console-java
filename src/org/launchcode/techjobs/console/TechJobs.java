@@ -2,7 +2,11 @@ package org.launchcode.techjobs.console;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+
+import static org.launchcode.techjobs.console.JobData.findAll;
+import static org.launchcode.techjobs.console.JobData.findByColumnAndValue;
 
 /**
  * Created by LaunchCode
@@ -11,9 +15,13 @@ public class TechJobs {
 
     private static Scanner in = new Scanner(System.in);
 
-    public static void main (String[] args) {
+    public boolean equalsIgnoreCase(String string) {
+        return false;
+    }
 
-        // Initialize our field map with key/name pairs
+    public static void main(String[] args) {
+
+        // Initializing the field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
         columnChoices.put("core competency", "Skill");
         columnChoices.put("employer", "Employer");
@@ -38,10 +46,10 @@ public class TechJobs {
                 String columnChoice = getUserSelection("List", columnChoices);
 
                 if (columnChoice.equals("all")) {
-                    printJobs(JobData.findAll());
+                    printJobs(findAll());
                 } else {
 
-                    ArrayList<String> results = JobData.findAll(columnChoice);
+                    ArrayList<String> results = findAll(columnChoice);
 
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
 
@@ -53,15 +61,22 @@ public class TechJobs {
 
             } else { // choice is "search"
 
-                // How does the user want to search (e.g. by skill or employer)
+                         // How does the user want to search (e.g. by skill or employer)
                 String searchField = getUserSelection("Search by:", columnChoices);
 
                 // What is their search term?
                 System.out.println("\nSearch term: ");
                 String searchTerm = in.nextLine();
+                String value = "";
 
-                if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
+                System.out.println("\n");
+
+
+
+
+                if (searchField.equals("all") && searchTerm.equals("")) {
+                    printJobs(findAll());
+                    //         System.out.println("Search all fields not yet implemented.");
                 } else {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
@@ -69,7 +84,7 @@ public class TechJobs {
         }
     }
 
-    // ﻿Returns the key of the selected item from the choices Dictionary
+    // Returns the key of the selected item from the choices Dictionary
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
         Integer choiceIdx;
@@ -98,12 +113,12 @@ public class TechJobs {
 
             // Validate user's input
             if (choiceIdx < 0 || choiceIdx >= choiceKeys.length) {
-                System.out.println("Invalid choice. Try again.");
+                System.out.println("Invalid choice. Please try again.");
             } else {
                 validChoice = true;
             }
 
-        } while(!validChoice);
+        } while (!validChoice);
 
         return choiceKeys[choiceIdx];
     }
@@ -111,6 +126,24 @@ public class TechJobs {
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
 
-        System.out.println("printJobs is not implemented yet");
-    }
-}
+        if (someJobs.size() == 0) {
+            System.out.println("No Results for this list request");
+        } else {
+
+            for (int i = 0; i < someJobs.size(); i++) {
+
+                System.out.println("*****");//print out * before each job
+                for (Map.Entry<String, String> entry : someJobs.get(i).entrySet()) {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+
+
+
+                    System.out.println(key + ": " + value);
+                }
+                System.out.println("*****\n");
+
+            }
+        }
+
+    }}
